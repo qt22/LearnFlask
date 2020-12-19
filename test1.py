@@ -1,19 +1,23 @@
-from flask import Flask, redirect, url_for
+from flask import Flask, redirect, url_for, render_template
 
 app = Flask(__name__)
 
 
-@app.route("/")
-def home():
-    return "<h1>hello there general kenobi</h1>"
+@app.route("/<userName>")
+def home(userName):
+    return render_template("index.html", content="welcome "+userName, anime=["mob psycho 100", "haikyuu", "attack on titan"])
 
-@app.route("/<streetName>")
-def street(streetName):
-    return f"you belong to {streetName}"
 
-@app.route("/admin")
-def admin():
-    return redirect(url_for("home"))
+
+### Lesson 1: Introduction to Flask
+# @app.route("/<cityName>")
+# def city(cityName):
+#     return f"Are you from {cityName}"
+
+# @app.route("/admin/")
+# def admin():
+#     return redirect(url_for("city", cityName="wuhan"))
+### Lesson 1
 
 if __name__ == "__main__":
     app.run()
