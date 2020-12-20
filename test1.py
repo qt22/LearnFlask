@@ -5,8 +5,14 @@ app = Flask(__name__)
 
 @app.route("/<userName>")
 def home(userName):
-    return render_template("index.html", content="welcome "+userName, anime=["mob psycho 100", "haikyuu", "attack on titan"])
+    return render_template("index.html")
 
+@app.route("/test")
+def test():
+    return render_template("test.html")
+
+if __name__ == "__main__":
+    app.run(debug=True)
 
 
 ### Lesson 1: Introduction to Flask
@@ -19,5 +25,3 @@ def home(userName):
 #     return redirect(url_for("city", cityName="wuhan"))
 ### Lesson 1
 
-if __name__ == "__main__":
-    app.run()
