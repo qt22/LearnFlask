@@ -1,7 +1,9 @@
-from flask import Flask, redirect, url_for, render_template, request
+from flask import Flask, redirect, url_for, render_template, request, session
+from datetime import timedelta
 
 app = Flask(__name__)
-
+app.secret_key = "anykey"
+app.permanent_session_lifetime = timedelta(minutes=60)
 
 @app.route("/")
 def home():
@@ -10,18 +12,29 @@ def home():
 @app.route("/login/", methods=["POST", "GET"])
 def login():
     if request.method == "POST":
-        username = request.form["nm"] # get data 
-        return redirect(url_for("user", usr=username))
+        session.permanent = True
+        username = request.form["nm"]  # get data
+        session["username"] = username
+        return redirect(url_for("user"))
     else:
         return render_template("login.html")
+
+@app.route("/user")
+def user():
+    if "username" in session:
+        username = session["username"]
+        return f"<h1>{username}<h1>"
+    else:
+        return redirect(url_for("login"))
     
-
-@app.route("/<usr>")
-def user(usr):
-    return f"<h1>{usr}<h1>"
-
-
-
+@app.route("/logout", methods=["POST", "GET"])
+def logout():
+    if request.method == "POST":
+        session.pop("username", None)
+        return redirect(url_for("login"))
+    else:
+        return render_template("logout.html")
+    
 
 if __name__ == "__main__":
     app.run(debug=True)
@@ -52,3 +65,23 @@ if __name__ == "__main__":
 # def test():
 #     return render_template("test.html")
 ### Lesson 3
+
+
+
+
+
+
+### Lesson 4: GET & POST
+# @app.route("/login/", methods=["POST", "GET"])
+# def login():
+#     if request.method == "POST":
+#         username = request.form["nm"] # get data 
+#         return redirect(url_for("user", usr=username))
+#     else:
+#         return render_template("login.html")
+    
+
+# @app.route("/<usr>")
+# def user(usr):
+#     return f"<h1>{usr}<h1>"
+### Lesson 4
