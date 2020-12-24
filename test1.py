@@ -1,4 +1,4 @@
-from flask import Flask, redirect, url_for, render_template, request, session
+from flask import Flask, redirect, url_for, render_template, request, session, flash
 from datetime import timedelta
 
 app = Flask(__name__)
@@ -15,24 +15,31 @@ def login():
         session.permanent = True
         username = request.form["nm"]  # get data
         session["username"] = username
+        flash("log in successful!")
         return redirect(url_for("user"))
     else:
-        return render_template("login.html")
+        if "username" in session:
+            flash("already logged in!")
+            return redirect(url_for("user"))
+    return render_template("login.html")
 
-@app.route("/user")
+@app.route("/user/")
 def user():
     if "username" in session:
         username = session["username"]
-        return f"<h1>{username}<h1>"
+        return render_template("user.html", user=username)
     else:
+        flash("you are not logged in!")
         return redirect(url_for("login"))
     
-@app.route("/logout", methods=["POST", "GET"])
+@app.route("/logout/", methods=["POST", "GET"])
 def logout():
-    if request.method == "POST":
+    if request.method == "POST" and "username" in session:
+        username = session["username"]
         session.pop("username", None)
+        flash(f"You have been logged out, {username}!!!", "info")
         return redirect(url_for("login"))
-    else:
+    elif request.method == "GET":
         return render_template("logout.html")
     
 
@@ -85,3 +92,36 @@ if __name__ == "__main__":
 # def user(usr):
 #     return f"<h1>{usr}<h1>"
 ### Lesson 4
+
+
+
+
+
+
+### Lesson 5
+# @app.route("/login/", methods=["POST", "GET"])
+# def login():
+#     if request.method == "POST":
+#         session.permanent = True
+#         username = request.form["nm"]  # get data
+#         session["username"] = username
+#         return redirect(url_for("user"))
+#     else:
+#         return render_template("login.html")
+
+# @app.route("/user")
+# def user():
+#     if "username" in session:
+#         username = session["username"]
+#         return f"<h1>{username}<h1>"
+#     else:
+#         return redirect(url_for("login"))
+    
+# @app.route("/logout", methods=["POST", "GET"])
+# def logout():
+#     if request.method == "POST":
+#         session.pop("username", None)
+#         return redirect(url_for("login"))
+#     else:
+#         return render_template("logout.html")
+# ### Lesson 5

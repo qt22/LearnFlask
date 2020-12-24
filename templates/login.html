@@ -1,12 +1,20 @@
 <!-- prettier-ignore -->
 {% extends "base.html" %} 
 
-{% block title %}Login Page{% endblock %} 
+{% block title %}Login Page{% endblock %}
+
 
 {% block content %}
+<!-- prettier-ignore-start -->
+{% with messages = get_flashed_messages() %} {% if messages %} {% for msg in
+messages %}
+<p>{{msg}}</p>
+{% endfor %} {% endif %} {% endwith %}
+<!-- prettier-ignore-end -->
+
 <form action="#" method="POST">
-    <p>Name:</p>
-    <p><input type="text" name="nm"/></p>
-    <p><input type="submit" value="submit"/></p>
+  <p>Name:</p>
+  <p><input type="text" name="nm" /></p>
+  <p><input type="submit" value="submit" /></p>
 </form>
 {% endblock %}
