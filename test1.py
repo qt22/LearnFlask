@@ -26,12 +26,29 @@ class users(db.Model):
 def home():
     return render_template("index.html")
 
+@app.route("/view/", methods=["POST", "GET"])
+def view():
+    if request.method == "POST":
+        email = request.form["email"]
+        users.query.filter_by(email=email).delete()
+        db.session.commit()
+    return render_template("view.html", values=users.query.all())
+
 @app.route("/login/", methods=["POST", "GET"])
 def login():
     if request.method == "POST":
         session.permanent = True
         username = request.form["nm"]  # get data
         session["username"] = username
+
+        found_user = users.query.filter_by(name=username).first()
+        if found_user:
+            session["email_address"] = found_user.email
+        else:
+            usr = users(username, "")
+            db.session.add(usr) 
+            db.session.commit()
+
         flash("log in successful!")
         return redirect(url_for("user"))
     else:
@@ -46,8 +63,13 @@ def user():
     if "username" in session:
         username = session["username"]
         if request.method == "POST":
-            email_address = request.form["email"] # html name property
+            email = request.form["email"]  # html name property
             session["email_address"] = email
+
+            found_user = users.query.filter_by(name=username).first()
+            found_user.email = email
+            db.session.commit()
+
             flash("Email was saved!")
         else:
             if "email_address" in session:
