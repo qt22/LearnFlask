@@ -1,12 +1,12 @@
 from flask import Flask, render_template
+from another.second import second
 
 app = Flask(__name__)
-
+app.register_blueprint(second, url_prefix="/loo")
 
 @app.route("/")
-@app.route("/home")
 def home():
-    return render_template("home.html")
+    return "<h1>hello there general grievous<h1>"
 
 
 if __name__ == "__main__":
